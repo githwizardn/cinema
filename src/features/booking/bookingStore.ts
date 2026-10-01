@@ -1,4 +1,5 @@
 import { create } from 'zustand'
+import type { Order } from '../../api/types'
 
 export type BookingStep = 1 | 2 | 3
 
@@ -16,7 +17,7 @@ interface BookingState {
   holdId: string | null
   expiresAt: string | null
   subtotal: number
-  orderReference: string | null
+  order: Order | null
 
   open: (sessionId: number) => void
   close: () => void
@@ -25,7 +26,7 @@ interface BookingState {
   setSeatTicketType: (seatId: number, ticketType: string) => void
   clearSeats: () => void
   setHold: (holdId: string, expiresAt: string, subtotal: number) => void
-  setOrder: (reference: string) => void
+  setOrder: (order: Order) => void
   reset: () => void
 }
 
@@ -39,7 +40,7 @@ export const useBookingStore = create<BookingState>((set, get) => ({
   holdId: null,
   expiresAt: null,
   subtotal: 0,
-  orderReference: null,
+  order: null,
 
   open: (sessionId) =>
     set({
@@ -50,7 +51,7 @@ export const useBookingStore = create<BookingState>((set, get) => ({
       holdId: null,
       expiresAt: null,
       subtotal: 0,
-      orderReference: null,
+      order: null,
     }),
 
   close: () => set({ isOpen: false }),
@@ -85,7 +86,7 @@ export const useBookingStore = create<BookingState>((set, get) => ({
 
   setHold: (holdId, expiresAt, subtotal) => set({ holdId, expiresAt, subtotal }),
 
-  setOrder: (reference) => set({ orderReference: reference }),
+  setOrder: (order) => set({ order }),
 
   reset: () =>
     set({
@@ -96,6 +97,6 @@ export const useBookingStore = create<BookingState>((set, get) => ({
       holdId: null,
       expiresAt: null,
       subtotal: 0,
-      orderReference: null,
+      order: null,
     }),
 }))

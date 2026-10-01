@@ -8,7 +8,6 @@ import { SeatLegend } from './SeatLegend'
 import { BookingSidebar } from './BookingSidebar'
 import { CheckoutForm } from './CheckoutForm'
 import { ConfirmationView } from './ConfirmationView'
-import type { Order } from '../../api/types'
 
 export function BookingModal() {
   const {
@@ -18,13 +17,13 @@ export function BookingModal() {
     holdId,
     expiresAt,
     subtotal,
+    order,           // 🎯 store-იდან, არა payMutation.data-დან
     close,
     setStep,
     clearSeats,
     reset,
   } = useBookingStore()
 
-  const [order, setOrder] = useState<Order | null>(null)
   const [expiredWarning, setExpiredWarning] = useState(false)
 
   const { data: session } = useSession(sessionId)
@@ -32,17 +31,13 @@ export function BookingModal() {
   const releaseHold = useReleaseHold()
   const payMutation = usePayOrder()
 
-  // All hooks before any conditional return
+  // All hooks first
   const { display: timerDisplay, secondsLeft } = useHoldTimer(expiresAt, () => {
     setExpiredWarning(true)
     clearSeats()
     setStep(1)
     if (holdId) releaseHold.mutate(holdId)
   })
-
-  useEffect(() => {
-    if (payMutation.data) setOrder(payMutation.data)
-  }, [payMutation.data])
 
   useEffect(() => {
     if (!isOpen) return
@@ -72,7 +67,6 @@ export function BookingModal() {
   }
 
   const handleFinalClose = () => {
-    setOrder(null)
     setExpiredWarning(false)
     reset()
   }
@@ -208,7 +202,7 @@ export function BookingModal() {
                   expiresAt,
                   secondsRemaining: secondsLeft,
                   isLive: true,
-                  subtotal: subtotal,          // ✅ რეალური subtotal
+                  subtotal,
                   seats: [],
                 }}
               />
@@ -238,7 +232,7 @@ export function BookingModal() {
             </div>
           )}
 
-          {/* STEP 3 */}
+          {/* STEP 3 — Confirmation */}
           {step === 3 && order && (
             <ConfirmationView order={order} onClose={handleFinalClose} />
           )}

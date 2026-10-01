@@ -65,9 +65,9 @@ export function usePayOrder() {
   return useMutation({
     mutationFn: payOrder,
     onSuccess: (order) => {
-      setOrder(order.reference)
+      // ✅ ახლა მთლიანი order object-ს ვინახავთ
+      setOrder(order)
       setStep(3)
-      // Invalidate tickets so profile refetches
       queryClient.invalidateQueries({ queryKey: ['tickets'] })
       queryClient.invalidateQueries({ queryKey: ['seats', sessionId] })
     },
