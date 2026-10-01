@@ -39,7 +39,7 @@ export function useHoldSeats() {
       )
     },
     onSuccess: (data) => {
-      setHold(data.holdId, data.expiresAt)
+      setHold(data.holdId, data.expiresAt, data.subtotal)
       setStep(2)
     },
     onError: (err) => {

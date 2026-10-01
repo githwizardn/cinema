@@ -15,6 +15,7 @@ interface BookingState {
   selectedSeats: SelectedSeat[]
   holdId: string | null
   expiresAt: string | null
+  subtotal: number
   orderReference: string | null
 
   open: (sessionId: number) => void
@@ -23,7 +24,7 @@ interface BookingState {
   toggleSeat: (seat: { seatId: number; code: string }) => void
   setSeatTicketType: (seatId: number, ticketType: string) => void
   clearSeats: () => void
-  setHold: (holdId: string, expiresAt: string) => void
+  setHold: (holdId: string, expiresAt: string, subtotal: number) => void
   setOrder: (reference: string) => void
   reset: () => void
 }
@@ -37,6 +38,7 @@ export const useBookingStore = create<BookingState>((set, get) => ({
   selectedSeats: [],
   holdId: null,
   expiresAt: null,
+  subtotal: 0,
   orderReference: null,
 
   open: (sessionId) =>
@@ -47,6 +49,7 @@ export const useBookingStore = create<BookingState>((set, get) => ({
       selectedSeats: [],
       holdId: null,
       expiresAt: null,
+      subtotal: 0,
       orderReference: null,
     }),
 
@@ -80,7 +83,7 @@ export const useBookingStore = create<BookingState>((set, get) => ({
 
   clearSeats: () => set({ selectedSeats: [] }),
 
-  setHold: (holdId, expiresAt) => set({ holdId, expiresAt }),
+  setHold: (holdId, expiresAt, subtotal) => set({ holdId, expiresAt, subtotal }),
 
   setOrder: (reference) => set({ orderReference: reference }),
 
@@ -92,6 +95,7 @@ export const useBookingStore = create<BookingState>((set, get) => ({
       selectedSeats: [],
       holdId: null,
       expiresAt: null,
+      subtotal: 0,
       orderReference: null,
     }),
 }))

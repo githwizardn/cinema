@@ -17,6 +17,7 @@ export function BookingModal() {
     step,
     holdId,
     expiresAt,
+    subtotal,
     close,
     setStep,
     clearSeats,
@@ -31,7 +32,7 @@ export function BookingModal() {
   const releaseHold = useReleaseHold()
   const payMutation = usePayOrder()
 
-  // 🎯 ALL HOOKS FIRST — before any return
+  // All hooks before any conditional return
   const { display: timerDisplay, secondsLeft } = useHoldTimer(expiresAt, () => {
     setExpiredWarning(true)
     clearSeats()
@@ -39,17 +40,14 @@ export function BookingModal() {
     if (holdId) releaseHold.mutate(holdId)
   })
 
-  // Capture order on success
   useEffect(() => {
     if (payMutation.data) setOrder(payMutation.data)
   }, [payMutation.data])
 
-  // ESC + body scroll lock
   useEffect(() => {
     if (!isOpen) return
     const onEsc = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
-        // Inline close logic to avoid dependency on handleClose
         if (holdId && step < 3) {
           releaseHold.mutate(holdId)
         }
@@ -64,7 +62,6 @@ export function BookingModal() {
     }
   }, [isOpen, holdId, step, close, releaseHold])
 
-  // 🎯 Conditional render AFTER all hooks
   if (!isOpen) return null
 
   const handleClose = () => {
@@ -89,7 +86,7 @@ export function BookingModal() {
         className="relative w-full max-w-6xl max-h-[92vh] bg-bg-surface rounded-modal border border-bg-elevated shadow-2xl overflow-hidden flex flex-col"
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Header — session info */}
+        {/* Header */}
         {session && (
           <div className="px-6 py-4 border-b border-bg-elevated flex items-start justify-between gap-4">
             <div className="flex-1 min-w-0">
@@ -170,7 +167,6 @@ export function BookingModal() {
 
         {/* Body */}
         <div className="flex-1 overflow-y-auto px-6 py-6">
-          {/* Expired warning */}
           {expiredWarning && step === 1 && (
             <div className="mb-4 px-4 py-3 rounded-input border border-error bg-error-tint">
               <p className="text-body-sm text-error font-semibold">
@@ -179,7 +175,7 @@ export function BookingModal() {
             </div>
           )}
 
-          {/* STEP 1: Seats */}
+          {/* STEP 1 */}
           {step === 1 && (
             <>
               {seatMap && session ? (
@@ -202,7 +198,7 @@ export function BookingModal() {
             </>
           )}
 
-          {/* STEP 2: Checkout */}
+          {/* STEP 2 */}
           {step === 2 && holdId && expiresAt && !order && (
             <div className="grid grid-cols-2 gap-8">
               <CheckoutForm
@@ -212,7 +208,7 @@ export function BookingModal() {
                   expiresAt,
                   secondsRemaining: secondsLeft,
                   isLive: true,
-                  subtotal: 0,
+                  subtotal: subtotal,          // ✅ რეალური subtotal
                   seats: [],
                 }}
               />
@@ -231,12 +227,18 @@ export function BookingModal() {
                       {timerDisplay}
                     </span>
                   </div>
+                  <div className="flex justify-between py-2 border-t border-bg-elevated">
+                    <span className="text-txt-secondary font-semibold">Subtotal</span>
+                    <span className="text-txt-primary font-extrabold">
+                      ₾{subtotal.toFixed(2)}
+                    </span>
+                  </div>
                 </div>
               </div>
             </div>
           )}
 
-          {/* STEP 3: Confirmation */}
+          {/* STEP 3 */}
           {step === 3 && order && (
             <ConfirmationView order={order} onClose={handleFinalClose} />
           )}
