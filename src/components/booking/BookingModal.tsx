@@ -31,23 +31,8 @@ export function BookingModal() {
   const releaseHold = useReleaseHold()
   const payMutation = usePayOrder()
 
-  // ESC + body scroll lock
-  useEffect(() => {
-    if (!isOpen) return
-    const onEsc = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') handleClose()
-    }
-    document.addEventListener('keydown', onEsc)
-    document.body.style.overflow = 'hidden'
-    return () => {
-      document.removeEventListener('keydown', onEsc)
-      document.body.style.overflow = ''
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isOpen])
-
-  // Hold timer
-  useHoldTimer(expiresAt, () => {
+  // 🎯 ALL HOOKS FIRST — before any return
+  const { display: timerDisplay, secondsLeft } = useHoldTimer(expiresAt, () => {
     setExpiredWarning(true)
     clearSeats()
     setStep(1)
@@ -59,6 +44,27 @@ export function BookingModal() {
     if (payMutation.data) setOrder(payMutation.data)
   }, [payMutation.data])
 
+  // ESC + body scroll lock
+  useEffect(() => {
+    if (!isOpen) return
+    const onEsc = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        // Inline close logic to avoid dependency on handleClose
+        if (holdId && step < 3) {
+          releaseHold.mutate(holdId)
+        }
+        close()
+      }
+    }
+    document.addEventListener('keydown', onEsc)
+    document.body.style.overflow = 'hidden'
+    return () => {
+      document.removeEventListener('keydown', onEsc)
+      document.body.style.overflow = ''
+    }
+  }, [isOpen, holdId, step, close, releaseHold])
+
+  // 🎯 Conditional render AFTER all hooks
   if (!isOpen) return null
 
   const handleClose = () => {
@@ -68,11 +74,15 @@ export function BookingModal() {
     close()
   }
 
-  const { display: timerDisplay, secondsLeft } = useHoldTimer(expiresAt, () => {})
+  const handleFinalClose = () => {
+    setOrder(null)
+    setExpiredWarning(false)
+    reset()
+  }
 
   return createPortal(
     <div
-      className="fixed inset-0 z-100 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4"
+      className="fixed inset-0 z-[100] bg-black/80 backdrop-blur-sm flex items-center justify-center p-4"
       onClick={handleClose}
     >
       <div
@@ -172,7 +182,7 @@ export function BookingModal() {
           {/* STEP 1: Seats */}
           {step === 1 && (
             <>
-              {seatMap ? (
+              {seatMap && session ? (
                 <div className="grid grid-cols-3 gap-6">
                   <div className="col-span-2">
                     <SeatMap seatMap={seatMap} />
@@ -181,7 +191,7 @@ export function BookingModal() {
                     </div>
                   </div>
                   <div className="border-l border-bg-elevated pl-6">
-                    <BookingSidebar session={session!} />
+                    <BookingSidebar session={session} />
                   </div>
                 </div>
               ) : (
@@ -228,14 +238,7 @@ export function BookingModal() {
 
           {/* STEP 3: Confirmation */}
           {step === 3 && order && (
-            <ConfirmationView
-              order={order}
-              onClose={() => {
-                setOrder(null)
-                setExpiredWarning(false)
-                reset()
-              }}
-            />
+            <ConfirmationView order={order} onClose={handleFinalClose} />
           )}
         </div>
       </div>
