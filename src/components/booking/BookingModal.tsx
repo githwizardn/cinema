@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { useBookingStore } from '../../features/booking/bookingStore'
-import { useSession, useSessionSeats, useReleaseHold, usePayOrder } from '../../hooks/useBooking'
+import { useSession, useSessionSeats, useReleaseHold } from '../../hooks/useBooking'
 import { useHoldTimer } from '../../hooks/useHoldTimer'
 import { SeatMap } from './SeatMap'
 import { SeatLegend } from './SeatLegend'
@@ -17,7 +17,7 @@ export function BookingModal() {
     holdId,
     expiresAt,
     subtotal,
-    order,           // 🎯 store-იდან, არა payMutation.data-დან
+    order,
     close,
     setStep,
     clearSeats,
@@ -29,7 +29,6 @@ export function BookingModal() {
   const { data: session } = useSession(sessionId)
   const { data: seatMap } = useSessionSeats(sessionId)
   const releaseHold = useReleaseHold()
-  const payMutation = usePayOrder()
 
   // All hooks first
   const { display: timerDisplay, secondsLeft } = useHoldTimer(expiresAt, () => {
