@@ -11,7 +11,7 @@ export function HomePage() {
   return (
     <div>
       {featuredLoading && (
-        <div className="w-full h-[620px] bg-bg-surface animate-pulse" />
+        <div className="w-full h-155 bg-bg-surface animate-pulse" />
       )}
       {featured && <HeroCarousel movies={featured} />}
 
@@ -31,7 +31,7 @@ export function HomePage() {
           <div className="grid grid-cols-6 gap-4">
             {Array.from({ length: 6 }).map((_, i) => (
               <div key={i} className="flex flex-col gap-3">
-                <div className="aspect-[2/3] bg-bg-surface rounded-card animate-pulse" />
+                <div className="aspect-2/3 bg-bg-surface rounded-card animate-pulse" />
                 <div className="h-4 bg-bg-surface rounded animate-pulse" />
                 <div className="h-3 bg-bg-surface rounded animate-pulse w-2/3" />
               </div>
@@ -54,7 +54,7 @@ export function HomePage() {
           <div className="grid grid-cols-4 gap-4">
             {Array.from({ length: 4 }).map((_, i) => (
               <div key={i} className="flex flex-col gap-3">
-                <div className="aspect-[2/3] bg-bg-surface rounded-card animate-pulse" />
+                <div className="aspect-2/3 bg-bg-surface rounded-card animate-pulse" />
                 <div className="h-4 bg-bg-surface rounded animate-pulse" />
                 <div className="h-3 bg-bg-surface rounded animate-pulse w-2/3" />
               </div>

@@ -36,8 +36,8 @@ export function HeroCarousel({ movies }: HeroCarouselProps) {
           alt={movie.title}
           className="w-full h-full object-cover"
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-bg-base via-bg-base/85 to-transparent" />
-        <div className="absolute inset-0 bg-gradient-to-t from-bg-base via-transparent to-transparent" />
+        <div className="absolute inset-0 bg-linear-to-r from-bg-base via-bg-base/85 to-transparent" />
+        <div className="absolute inset-0 bg-linear-to-t from-bg-base via-transparent to-transparent" />
       </div>
 
       <div className="relative h-full max-w-[1600px] mx-auto px-8 flex flex-col justify-center">

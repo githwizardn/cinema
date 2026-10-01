@@ -14,7 +14,7 @@ export function MovieCard({ movie, variant = 'now-playing' }: MovieCardProps) {
       {/* Poster */}
       <Link
         to={isComingSoon ? '#' : `/movies/${movie.slug}`}
-        className={`relative block aspect-[2/3] rounded-card overflow-hidden bg-bg-surface ${
+        className={`relative block aspect-2/3 rounded-card overflow-hidden bg-bg-surface ${
           isComingSoon ? 'cursor-default' : ''
         }`}
       >

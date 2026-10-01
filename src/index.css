@@ -1,6 +1,6 @@
 @import "tailwindcss";
 
-@theme {
+:root {
   /* Backgrounds */
   --color-bg-base: #070C1C;
   --color-bg-surface: #1E2031;
@@ -16,6 +16,8 @@
   --color-primary-hover: #C42F24;
   --color-success: #4ADE80;
   --color-warning: #E27E04;
+  --color-error: #EF4444;
+  --color-error-tint: rgba(239, 68, 68, 0.1);
 
   /* Tint (10% opacity) */
   --color-surface-tint: rgba(255, 255, 255, 0.1);
