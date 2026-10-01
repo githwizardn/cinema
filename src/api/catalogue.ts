@@ -1,5 +1,5 @@
 import { api } from './client'
-import type { FilterOptions, Movie, MovieDetail } from './types'
+import type { FilterOptions, Movie, MovieDetail, Session, Venue } from './types'
 
 // ============ FILTER OPTIONS ============
 // Boot-ზე ერთხელ იტვირთება და cache-ში რჩება
@@ -48,4 +48,21 @@ export async function searchMovies(q: string): Promise<Movie[]> {
 // ============ NOTIFY ME ============
 export async function notifyMe(slug: string): Promise<void> {
   await api.post(`/movies/${slug}/notify`)
+}
+
+// ============ MOVIE SESSIONS ============
+export interface MovieSessionsGroup {
+  venue: Venue
+  sessions: Session[]
+}
+
+export async function getMovieSessions(
+  slug: string,
+  date?: string
+): Promise<MovieSessionsGroup[]> {
+  const { data } = await api.get<{ data: MovieSessionsGroup[] }>(
+    `/movies/${slug}/sessions`,
+    { params: date ? { date } : undefined }
+  )
+  return data.data
 }

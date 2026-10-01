@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query'
-import { getFeatured, getNowPlaying, getComingSoon } from '../api/catalogue'
+import { getFeatured, getNowPlaying, getComingSoon, getMovie, getMovieSessions } from '../api/catalogue'
 
 export function useFeatured() {
   return useQuery({
@@ -22,5 +22,21 @@ export function useComingSoon(limit?: number) {
     queryKey: ['movies', 'coming-soon', limit],
     queryFn: () => getComingSoon(limit),
     staleTime: 5 * 60 * 1000,
+  })
+}
+
+export function useMovie(slug: string) {
+  return useQuery({
+    queryKey: ['movies', slug],
+    queryFn: () => getMovie(slug),
+    enabled: !!slug,
+  })
+}
+
+export function useMovieSessions(slug: string, date?: string) {
+  return useQuery({
+    queryKey: ['movies', slug, 'sessions', date],
+    queryFn: () => getMovieSessions(slug, date),
+    enabled: !!slug,
   })
 }
