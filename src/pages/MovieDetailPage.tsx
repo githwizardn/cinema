@@ -2,12 +2,14 @@ import { useParams, Link } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 import { useMovie, useMovieSessions } from '../hooks/useMovies'
 import { useAuthStore, useAuthModal } from '../features/auth/authStore'
+import { useBookingStore } from '../features/booking/bookingStore'
 import type { MovieSessionsGroup } from '../api/catalogue'
 
 export function MovieDetailPage() {
   const { slug } = useParams<{ slug: string }>()
   const { isAuthenticated, user } = useAuthStore()
   const { openLogin } = useAuthModal()
+  const { open } = useBookingStore()
   const [selectedDate, setSelectedDate] = useState<string | null>(null)
 
   const { data: movie, isLoading: movieLoading, isError: movieError } = useMovie(slug!)
@@ -55,8 +57,7 @@ export function MovieDetailPage() {
       return
     }
     if (isAgeRestricted) return
-    // TODO: Booking modal — next step
-    console.log('Open booking modal for session', sessionId)
+    open(sessionId)
   }
 
   // Date picker — first 7 days from availableDates

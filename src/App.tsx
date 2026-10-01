@@ -4,6 +4,7 @@ import { HomePage } from './pages/HomePage'
 import { SessionsPage } from './pages/SessionsPage'
 import { MovieDetailPage } from './pages/MovieDetailPage'
 import { AuthModals } from './features/auth/AuthModals'
+import { BookingModal } from './components/booking/BookingModal'
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
         </Route>
       </Routes>
       <AuthModals />
+      <BookingModal />
     </BrowserRouter>
   )
 }
