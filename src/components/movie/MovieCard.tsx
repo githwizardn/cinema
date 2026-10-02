@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import type { Movie } from '../../api/types'
 
 interface MovieCardProps {
@@ -8,16 +8,27 @@ interface MovieCardProps {
 
 export function MovieCard({ movie, variant = 'now-playing' }: MovieCardProps) {
   const isComingSoon = variant === 'coming-soon'
+  const navigate = useNavigate()
+
+  const goToMovie = () => {
+    navigate(`/movies/${movie.slug}`)
+  }
 
   return (
-    <div className="group relative flex flex-col">
+    <div
+      onClick={goToMovie}
+      className="group relative flex flex-col cursor-pointer"
+      role="button"
+      tabIndex={0}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault()
+          goToMovie()
+        }
+      }}
+    >
       {/* Poster */}
-      <Link
-        to={isComingSoon ? '#' : `/movies/${movie.slug}`}
-        className={`relative block aspect-2/3 rounded-card overflow-hidden bg-bg-surface ${
-          isComingSoon ? 'cursor-default' : ''
-        }`}
-      >
+      <div className="relative aspect-2/3 rounded-card overflow-hidden bg-bg-surface">
         <img
           src={movie.posterUrl ?? ''}
           alt={movie.title}
@@ -35,7 +46,7 @@ export function MovieCard({ movie, variant = 'now-playing' }: MovieCardProps) {
             COMING SOON
           </div>
         )}
-      </Link>
+      </div>
 
       {/* Info below poster */}
       <div className="mt-4 flex flex-col flex-1">
@@ -58,7 +69,15 @@ export function MovieCard({ movie, variant = 'now-playing' }: MovieCardProps) {
                   month: 'short',
                 })}
               </span>
-              <button className="px-3 py-1.5 border border-bg-elevated hover:border-txt-secondary rounded-input text-body-sm font-semibold text-txt-primary transition-colors flex items-center gap-1.5">
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation()
+                  // TODO: POST /movies/{slug}/notify — interrupted action
+                  navigate(`/movies/${movie.slug}`)
+                }}
+                className="px-3 py-1.5 border border-bg-elevated hover:border-txt-secondary rounded-input text-body-sm font-semibold text-txt-primary transition-colors flex items-center gap-1.5"
+              >
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                   <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" strokeLinecap="round" strokeLinejoin="round" />
                   <path d="M13.73 21a2 2 0 0 1-3.46 0" strokeLinecap="round" strokeLinejoin="round" />
@@ -71,12 +90,16 @@ export function MovieCard({ movie, variant = 'now-playing' }: MovieCardProps) {
               <span className="text-body-sm text-txt-secondary">
                 From <span className="text-txt-primary font-bold">₾{movie.fromPrice}</span>
               </span>
-              <Link
-                to={`/movies/${movie.slug}`}
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation()
+                  goToMovie()
+                }}
                 className="px-3 py-1.5 bg-primary hover:bg-primary-hover rounded-input text-body-sm font-bold text-white transition-colors"
               >
                 Buy Ticket
-              </Link>
+              </button>
             </>
           )}
         </div>

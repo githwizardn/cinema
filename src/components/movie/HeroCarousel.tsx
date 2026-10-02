@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Link } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import type { Movie } from '../../api/types'
 
 interface HeroCarouselProps {
@@ -9,6 +9,7 @@ interface HeroCarouselProps {
 export function HeroCarousel({ movies }: HeroCarouselProps) {
   const [current, setCurrent] = useState(0)
   const [isPaused, setIsPaused] = useState(false)
+  const navigate = useNavigate()
 
   useEffect(() => {
     if (isPaused || movies.length <= 1) return
@@ -24,6 +25,10 @@ export function HeroCarousel({ movies }: HeroCarouselProps) {
   const prev = () => setCurrent((c) => (c - 1 + movies.length) % movies.length)
   const next = () => setCurrent((c) => (c + 1) % movies.length)
 
+  const goToMovie = () => {
+    navigate(`/movies/${movie.slug}`)
+  }
+
   return (
     <div
       className="relative w-full overflow-hidden"
@@ -31,24 +36,32 @@ export function HeroCarousel({ movies }: HeroCarouselProps) {
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
     >
-      {/* Backdrop */}
-      <img
-        src={movie.backdropUrl ?? ''}
-        alt={movie.title}
-        className="absolute inset-0 w-full h-full object-cover"
-      />
-
-      {/* Solid dark overlay — Guaranteed */}
+      {/* 🎯 Backdrop — clickable */}
       <div
-        className="absolute inset-0"
-        style={{
-          background:
-            'linear-gradient(to right, rgba(7,12,28,1) 0%, rgba(7,12,28,0.95) 25%, rgba(7,12,28,0.7) 55%, rgba(7,12,28,0.3) 100%)',
-        }}
-      />
+        onClick={goToMovie}
+        className="absolute inset-0 cursor-pointer"
+      >
+        <img
+          src={movie.backdropUrl ?? ''}
+          alt={movie.title}
+          className="absolute inset-0 w-full h-full object-cover"
+        />
 
-      {/* Content */}
-      <div className="relative h-full max-w-[1600px] mx-auto px-8 flex flex-col justify-center">
+        {/* Dark overlay */}
+        <div
+          className="absolute inset-0"
+          style={{
+            background:
+              'linear-gradient(to right, rgba(7,12,28,1) 0%, rgba(7,12,28,0.95) 25%, rgba(7,12,28,0.7) 55%, rgba(7,12,28,0.3) 100%)',
+          }}
+        />
+      </div>
+
+      {/* 🎯 Content — clickable */}
+      <div
+        onClick={goToMovie}
+        className="relative h-full max-w-[1600px] mx-auto px-8 flex flex-col justify-center cursor-pointer"
+      >
         <div className="max-w-xl">
           <div className="mb-4">
             <span className="text-xs font-bold tracking-widest" style={{ color: '#EC3013' }}>
@@ -74,9 +87,15 @@ export function HeroCarousel({ movies }: HeroCarouselProps) {
             sound and picture technology.
           </p>
 
+          {/* Buttons — ესენი ცალკე ლოგიკა */}
           <div className="flex items-center gap-3">
-            <Link
-              to={`/movies/${movie.slug}`}
+            {/* Buy Tickets → Movie Detail */}
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation()
+                goToMovie()
+              }}
               className="px-6 py-3 rounded-lg font-bold inline-flex items-center gap-2 transition-colors hover:opacity-90"
               style={{ backgroundColor: '#EC3013', color: '#FFFFFF' }}
             >
@@ -84,26 +103,35 @@ export function HeroCarousel({ movies }: HeroCarouselProps) {
                 <path d="M8 5v14l11-7z" />
               </svg>
               Buy Tickets
-            </Link>
-            <Link
-              to="/sessions"
+            </button>
+
+            {/* All Sessions → Sessions Page (stopPropagation!) */}
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation()
+                navigate('/sessions')
+              }}
               className="px-6 py-3 rounded-lg font-bold transition-colors hover:opacity-90"
               style={{ backgroundColor: '#FFFFFF', color: '#070C1C' }}
             >
               All Sessions
-            </Link>
+            </button>
           </div>
         </div>
       </div>
 
-      {/* Progress + arrows */}
-      <div className="absolute bottom-8 left-8 right-8 max-w-[1600px] mx-auto flex items-center gap-6">
+      {/* Progress + arrows — stopPropagation on parent */}
+      <div
+        className="absolute bottom-8 left-8 right-8 max-w-[1600px] mx-auto flex items-center gap-6"
+        onClick={(e) => e.stopPropagation()}
+      >
         <div className="flex-1 flex gap-2">
           {movies.map((_, i) => (
             <button
               key={i}
               onClick={() => setCurrent(i)}
-              className="flex-1 h-0.5 rounded-full overflow-hidden relative"
+              className="flex-1 h-0.5 rounded-full overflow-hidden relative cursor-pointer"
               style={{ backgroundColor: 'rgba(255,255,255,0.2)' }}
             >
               {i === current && (
@@ -118,8 +146,9 @@ export function HeroCarousel({ movies }: HeroCarouselProps) {
 
         <div className="flex gap-2">
           <button
+            type="button"
             onClick={prev}
-            className="w-10 h-10 rounded-full flex items-center justify-center text-white transition-colors hover:opacity-80"
+            className="w-10 h-10 rounded-full flex items-center justify-center text-white transition-colors hover:opacity-80 cursor-pointer"
             style={{ backgroundColor: 'rgba(255,255,255,0.1)' }}
             aria-label="Previous"
           >
@@ -128,8 +157,9 @@ export function HeroCarousel({ movies }: HeroCarouselProps) {
             </svg>
           </button>
           <button
+            type="button"
             onClick={next}
-            className="w-10 h-10 rounded-full flex items-center justify-center text-white transition-colors hover:opacity-80"
+            className="w-10 h-10 rounded-full flex items-center justify-center text-white transition-colors hover:opacity-80 cursor-pointer"
             style={{ backgroundColor: 'rgba(255,255,255,0.1)' }}
             aria-label="Next"
           >

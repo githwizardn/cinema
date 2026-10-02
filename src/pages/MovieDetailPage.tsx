@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react'
 import { useMovie, useMovieSessions } from '../hooks/useMovies'
 import { useAuthStore, useAuthModal } from '../features/auth/authStore'
 import { useBookingStore } from '../features/booking/bookingStore'
+import { addRecentlyViewed } from '../hooks/useRecentlyViewed'
 import type { MovieSessionsGroup } from '../api/catalogue'
 
 export function MovieDetailPage() {
@@ -24,6 +25,15 @@ export function MovieDetailPage() {
       setSelectedDate(movie.availableDates[0])
     }
   }, [movie, selectedDate])
+
+  // ✅ Track as recently viewed — ALL HOOKS BEFORE ANY RETURN
+  useEffect(() => {
+    if (movie) {
+      addRecentlyViewed(movie)
+    }
+  }, [movie?.slug])
+
+  // 🔽 ახლა return-ები (hooks-ის შემდეგ)
 
   if (movieLoading) {
     return (

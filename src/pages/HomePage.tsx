@@ -1,6 +1,7 @@
 import { useFeatured, useNowPlaying, useComingSoon } from '../hooks/useMovies'
 import { HeroCarousel } from '../components/movie/HeroCarousel'
 import { MovieCard } from '../components/movie/MovieCard'
+import { RecentlyViewed } from '../components/movie/RecentlyViewed'
 import { Link } from 'react-router-dom'
 
 export function HomePage() {
@@ -10,10 +11,14 @@ export function HomePage() {
 
   return (
     <div>
+      {/* Hero Carousel */}
       {featuredLoading && (
         <div className="w-full h-155 bg-bg-surface animate-pulse" />
       )}
       {featured && <HeroCarousel movies={featured} />}
+
+      {/* Recently viewed — only shows if user has viewed movies before */}
+      <RecentlyViewed />
 
       {/* Now Playing */}
       <section className="max-w-[1600px] mx-auto px-8 py-16">
