@@ -89,7 +89,7 @@ export function MovieDetailPage() {
         <img
           src={movie.backdropUrl ?? ''}
           alt={movie.title}
-          className="w-full h-full object-cover"
+          className="w-full h-full object-cover object-top"
         />
         <div className="absolute inset-0 bg-linear-to-t from-bg-base via-bg-base/70 to-bg-base/40" />
       </div>
@@ -103,7 +103,7 @@ export function MovieDetailPage() {
               <img
                 src={movie.posterUrl ?? ''}
                 alt={movie.title}
-                className="w-full h-full object-cover"
+                className="w-full h-full object-cover object-top"
               />
             </div>
           </div>

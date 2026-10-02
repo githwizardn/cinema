@@ -44,7 +44,7 @@ export function HeroCarousel({ movies }: HeroCarouselProps) {
         <img
           src={movie.backdropUrl ?? ''}
           alt={movie.title}
-          className="absolute inset-0 w-full h-full object-cover"
+          className="absolute inset-0 w-full h-full object-cover object-[center_25%]"
         />
 
         {/* Dark overlay */}
@@ -87,9 +87,8 @@ export function HeroCarousel({ movies }: HeroCarouselProps) {
             sound and picture technology.
           </p>
 
-          {/* Buttons — ესენი ცალკე ლოგიკა */}
+          {/* Buttons */}
           <div className="flex items-center gap-3">
-            {/* Buy Tickets → Movie Detail */}
             <button
               type="button"
               onClick={(e) => {
@@ -105,7 +104,6 @@ export function HeroCarousel({ movies }: HeroCarouselProps) {
               Buy Tickets
             </button>
 
-            {/* All Sessions → Sessions Page (stopPropagation!) */}
             <button
               type="button"
               onClick={(e) => {
@@ -121,7 +119,7 @@ export function HeroCarousel({ movies }: HeroCarouselProps) {
         </div>
       </div>
 
-      {/* Progress + arrows — stopPropagation on parent */}
+      {/* Progress + arrows */}
       <div
         className="absolute bottom-8 left-8 right-8 max-w-[1600px] mx-auto flex items-center gap-6"
         onClick={(e) => e.stopPropagation()}

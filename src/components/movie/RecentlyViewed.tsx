@@ -25,7 +25,7 @@ export function RecentlyViewed() {
                 <img
                   src={movie.posterUrl ?? ''}
                   alt={movie.title}
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform"
+                  className="w-full h-full object-cover object-top group-hover:scale-105 transition-transform"
                 />
               </div>
             </div>

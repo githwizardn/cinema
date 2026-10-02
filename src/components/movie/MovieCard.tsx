@@ -23,7 +23,6 @@ export function MovieCard({ movie, variant = 'now-playing' }: MovieCardProps) {
   const handleNotify = (e: React.MouseEvent) => {
     e.stopPropagation()
     if (!isAuthenticated) {
-      // 🎯 Store pending action — replay after login
       setPendingAction(() => () => notifyMutation.mutate(movie.slug))
       openLogin()
       return
@@ -49,7 +48,7 @@ export function MovieCard({ movie, variant = 'now-playing' }: MovieCardProps) {
         <img
           src={movie.posterUrl ?? ''}
           alt={movie.title}
-          className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+          className="w-full h-full object-cover object-top transition-transform duration-300 group-hover:scale-105"
         />
 
         {/* Age rating badge — top left */}
