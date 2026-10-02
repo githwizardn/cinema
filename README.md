@@ -30,9 +30,7 @@ The project demonstrates a modern React stack with **TypeScript**, **TanStack Qu
 
 ## 🚀 Live Demo
 
-🔗 **Production:** [kino-xii.vercel.app](https://kino-xii.vercel.app)
-
-> ⚠️ Replace the URL above with your actual deployment link after Vercel/Netlify deploy.
+🔗 https://cinema-7wv0dx79j-githwizardns-projects.vercel.app/
 
 ###  Account
 
@@ -682,28 +680,12 @@ Critical rules:
 
 ### Vercel (recommended)
 
-1. **Sign up:** [vercel.com/signup](https://vercel.com/signup) → Continue with GitHub
-2. **Import:** Dashboard → **Add New** → **Project** → select `githwizardn/cinema`
-3. **Environment variables** ⚠️ **required**
-   - `VITE_API_URL` = `https://api.kinoxii.redberryinternship.ge/api`
-4. **Deploy** — Vite auto-detected, build command `npm run build`, output `dist`
-5. **Done** — deployment URL appears in ~1 minute
-
-### Netlify (alternative)
-
-1. **Sign up:** [app.netlify.com](https://app.netlify.com/) → Continue with GitHub
-2. **Import:** Add new site → Import from Git → select repo
-3. **Build settings:**
-   - Build command: `npm run build`
-   - Publish directory: `dist`
-4. **Environment variables** → add `VITE_API_URL`
-5. **Deploy**
+https://cinema-7wv0dx79j-githwizardns-projects.vercel.app/
 
 ---
 
 ## 🚀 Future Improvements
 
-If more time were available:
 
 - [ ] **Responsive layout** — mobile and tablet breakpoints (currently desktop-only at 1920×1080)
 - [ ] **Dark / Light theme** toggle
@@ -737,17 +719,11 @@ If more time were available:
 
 ---
 
-## 📄 License
-
-This project is licensed under the **MIT License** — feel free to use it as a reference.
-
----
-
 ## 🙏 Acknowledgments
 
-- **Redberry** — for the Bootcamp opportunity
-- **Figma designer** — for the detailed design system
-- **Kinoxii API team** — for the well-documented REST API
+- **Redberry** — ❤️
+- **Figma designer** — ❤️
+- **API team** — ❤️
 
 ---
 
