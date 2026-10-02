@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { useAuthStore, useAuthModal } from '../../features/auth/authStore'
 import { logout } from '../../api/auth'
+import { SearchBar } from './SearchBar'
 
 export function Navbar() {
   const location = useLocation()
@@ -11,7 +12,6 @@ export function Navbar() {
   const [dropdownOpen, setDropdownOpen] = useState(false)
   const dropdownRef = useRef<HTMLDivElement>(null)
 
-  // Close dropdown on outside click
   useEffect(() => {
     const handler = (e: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
@@ -55,25 +55,8 @@ export function Navbar() {
           SESSIONS
         </Link>
 
-        {/* Search bar */}
-        <div className="flex-1 max-w-md mx-auto">
-          <div className="relative">
-            <svg
-              className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-txt-muted"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <circle cx="11" cy="11" r="7" strokeWidth="2" />
-              <path d="m21 21-4.35-4.35" strokeWidth="2" strokeLinecap="round" />
-            </svg>
-            <input
-              type="text"
-              placeholder="Search films and live events"
-              className="w-full bg-bg-base border border-bg-elevated rounded-full pl-11 pr-4 py-2.5 text-sm text-txt-primary placeholder:text-txt-muted focus:outline-none focus:border-primary transition-colors"
-            />
-          </div>
-        </div>
+        {/* Search bar — extracted component */}
+        <SearchBar />
 
         {/* Auth state */}
         {isAuthenticated ? (
@@ -96,7 +79,6 @@ export function Navbar() {
               <span className="text-sm font-semibold text-txt-primary">
                 {user?.fullName ?? user?.username}
               </span>
-              {/* Yellow/green dot for profile status */}
               {user && !user.profileComplete && (
                 <span className="w-2 h-2 rounded-full bg-warning" title="Profile incomplete" />
               )}
