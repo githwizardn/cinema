@@ -14,26 +14,24 @@ export function MovieDetailPage() {
   const { setPendingAction } = usePendingAction()
   const { open } = useBookingStore()
   const notifyMutation = useNotify()
-  const [selectedDate, setSelectedDate] = useState<string | null>(null)
+  const [userSelectedDate, setUserSelectedDate] = useState<string | null>(null)
 
   const { data: movie, isLoading: movieLoading, isError: movieError } = useMovie(slug!)
+
+  // 🎯 Derived state — no effect needed
+  const selectedDate = userSelectedDate ?? movie?.availableDates[0] ?? null
+
   const { data: sessionGroups, isLoading: sessionsLoading } = useMovieSessions(
     slug!,
     selectedDate ?? undefined
   )
-
-  // Default date — availableDates-ის პირველი
-  useEffect(() => {
-    if (movie && !selectedDate && movie.availableDates.length > 0) {
-      setSelectedDate(movie.availableDates[0])
-    }
-  }, [movie, selectedDate])
 
   // Track as recently viewed
   useEffect(() => {
     if (movie) {
       addRecentlyViewed(movie)
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [movie?.slug])
 
   if (movieLoading) {
@@ -64,7 +62,6 @@ export function MovieDetailPage() {
 
   const handleSessionClick = (sessionId: number) => {
     if (!isAuthenticated) {
-      // 🎯 Store pending action — replay after login
       setPendingAction(() => () => open(sessionId))
       openLogin()
       return
@@ -75,7 +72,6 @@ export function MovieDetailPage() {
 
   const handleNotify = () => {
     if (!isAuthenticated) {
-      // 🎯 Store pending action — replay after login
       setPendingAction(() => () => notifyMutation.mutate(movie.slug))
       openLogin()
       return
@@ -83,13 +79,13 @@ export function MovieDetailPage() {
     notifyMutation.mutate(movie.slug)
   }
 
-  // Date picker — first 7 days from availableDates
+  // Date picker — first 7 days
   const dates = movie.availableDates.slice(0, 7)
 
   return (
     <div>
       {/* Backdrop hero */}
-      <div className="relative w-full h-[400px] overflow-hidden">
+      <div className="relative w-full h-100 overflow-hidden">
         <img
           src={movie.backdropUrl ?? ''}
           alt={movie.title}
@@ -236,7 +232,7 @@ export function MovieDetailPage() {
                   return (
                     <button
                       key={date}
-                      onClick={() => setSelectedDate(date)}
+                      onClick={() => setUserSelectedDate(date)}
                       className={`shrink-0 px-5 py-3 rounded-input border text-center transition-colors ${
                         isActive
                           ? 'bg-primary border-primary text-white'

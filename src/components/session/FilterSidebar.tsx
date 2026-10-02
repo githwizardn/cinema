@@ -86,7 +86,6 @@ export function FilterSidebar() {
     )
   }
 
-  // Generate 7 days starting today
   const today = new Date()
   const days = Array.from({ length: 7 }, (_, i) => {
     const d = new Date(today)
@@ -94,8 +93,7 @@ export function FilterSidebar() {
     return d
   })
 
-  const selectedDate =
-    filters.date ?? days[0].toISOString().split('T')[0]
+  const selectedDate = filters.date ?? days[0].toISOString().split('T')[0]
 
   const toggle = (key: 'venues' | 'formats' | 'languages' | 'bands', value: string) => {
     const current = filters[key]
@@ -107,7 +105,6 @@ export function FilterSidebar() {
 
   return (
     <div className="space-y-8">
-      {/* Header */}
       <div>
         <h2 className="text-h3 font-extrabold text-txt-primary">Filters</h2>
       </div>
@@ -126,7 +123,7 @@ export function FilterSidebar() {
               <button
                 key={iso}
                 onClick={() => updateFilters({ date: iso })}
-                className={`flex-shrink-0 w-12 py-2 rounded-input text-center transition-colors ${
+                className={`shrink-0 w-12 py-2 rounded-input text-center transition-colors ${
                   isActive
                     ? 'bg-primary text-white'
                     : 'bg-bg-surface text-txt-secondary hover:text-txt-primary'

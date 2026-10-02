@@ -1,10 +1,9 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import type { Movie } from '../api/types'
 
 const STORAGE_KEY = 'kino_recently_viewed'
 const MAX_ITEMS = 6
 
-// Store only what we need to render the row — small payload
 export interface RecentlyViewedMovie {
   id: number
   slug: string
@@ -54,11 +53,7 @@ export function addRecentlyViewed(movie: Movie) {
 }
 
 export function useRecentlyViewed(): RecentlyViewedMovie[] {
-  const [items, setItems] = useState<RecentlyViewedMovie[]>([])
-
-  useEffect(() => {
-    setItems(read())
-  }, [])
-
+  // Lazy initializer — reads localStorage once on mount
+  const [items] = useState<RecentlyViewedMovie[]>(() => read())
   return items
 }

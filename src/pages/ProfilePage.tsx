@@ -22,17 +22,27 @@ interface ProfileFormValues {
 type Tab = 'personal' | 'tickets'
 type TicketsTab = 'upcoming' | 'past'
 
+// 🎯 Module-level validation — avoids impure Date.now() inside render
+function validateDob(value: string): true | string {
+  if (!value) return true
+  const dob = new Date(value)
+  if (dob > new Date()) return 'Please enter a valid date of birth'
+  const age = Math.floor((Date.now() - dob.getTime()) / (365.25 * 24 * 60 * 60 * 1000))
+  if (age < 12) return 'You must be at least 12 years old to create an account'
+  return true
+}
+
 export function ProfilePage() {
   const { user } = useAuthStore()
   const { data: filterOptions } = useFilterOptions()
   const updateMutation = useUpdateProfile()
 
-  // 🎯 Read/write tab from URL
   const [searchParams, setSearchParams] = useSearchParams()
   const tabParam = searchParams.get('tab')
-  const activeTab: Tab = tabParam === 'tickets' || tabParam === 'upcoming' || tabParam === 'past'
-    ? 'tickets'
-    : 'personal'
+  const activeTab: Tab =
+    tabParam === 'tickets' || tabParam === 'upcoming' || tabParam === 'past'
+      ? 'tickets'
+      : 'personal'
   const ticketsTab: TicketsTab = tabParam === 'past' ? 'past' : 'upcoming'
 
   const setActiveTab = (tab: Tab) => {
@@ -47,7 +57,6 @@ export function ProfilePage() {
   }
 
   const [refundOrder, setRefundOrder] = useState<Order | null>(null)
-
   const [serverError, setServerError] = useState<string | null>(null)
   const [fieldErrors, setFieldErrors] = useState<Record<string, string[]>>({})
   const [successMessage, setSuccessMessage] = useState<string | null>(null)
@@ -80,11 +89,8 @@ export function ProfilePage() {
         preferredVenueId: user.preferredVenue?.id ? String(user.preferredVenue.id) : '',
       })
     }
-  }, [user, reset])
-
-  useEffect(() => {
-    if (isDirty) setSuccessMessage(null)
-  }, [isDirty])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user?.id])
 
   const onSubmit = async (values: ProfileFormValues) => {
     setServerError(null)
@@ -121,7 +127,6 @@ export function ProfilePage() {
 
   return (
     <div className="max-w-[1600px] mx-auto px-8 py-12">
-      {/* Header */}
       <div className="mb-8">
         <h1 className="text-hero font-extrabold text-txt-primary mb-4">My Profile</h1>
 
@@ -147,7 +152,7 @@ export function ProfilePage() {
         )}
       </div>
 
-      {/* Top-level tabs */}
+      {/* Tabs */}
       <div className="flex gap-6 border-b border-bg-elevated mb-8">
         <button
           onClick={() => setActiveTab('personal')}
@@ -198,7 +203,7 @@ export function ProfilePage() {
               </div>
             )}
 
-            {successMessage && (
+            {successMessage && !isDirty && (
               <div className="px-3 py-2 rounded-input border border-success bg-success/10 text-body-sm text-success">
                 {successMessage}
               </div>
@@ -249,16 +254,7 @@ export function ProfilePage() {
               isValid={touchedFields.dateOfBirth && !errors.dateOfBirth && !fieldErrors.dateOfBirth}
               {...register('dateOfBirth', {
                 required: 'Date of birth is required',
-                validate: (value) => {
-                  if (!value) return true
-                  const dob = new Date(value)
-                  if (dob > new Date()) return 'Please enter a valid date of birth'
-                  const age = Math.floor(
-                    (Date.now() - dob.getTime()) / (365.25 * 24 * 60 * 60 * 1000)
-                  )
-                  if (age < 12) return 'You must be at least 12 years old to create an account'
-                  return true
-                },
+                validate: validateDob,
               })}
             />
 
@@ -366,7 +362,6 @@ export function ProfilePage() {
         </div>
       )}
 
-      {/* Refund Modal */}
       <RefundModal order={refundOrder} onClose={() => setRefundOrder(null)} />
     </div>
   )

@@ -30,7 +30,6 @@ export function BookingModal() {
   const { data: seatMap } = useSessionSeats(sessionId)
   const releaseHold = useReleaseHold()
 
-  // All hooks first
   const { display: timerDisplay, secondsLeft } = useHoldTimer(expiresAt, () => {
     setExpiredWarning(true)
     clearSeats()
@@ -72,14 +71,13 @@ export function BookingModal() {
 
   return createPortal(
     <div
-      className="fixed inset-0 z-[100] bg-black/80 backdrop-blur-sm flex items-center justify-center p-4"
+      className="fixed inset-0 z-100 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4"
       onClick={handleClose}
     >
       <div
         className="relative w-full max-w-6xl max-h-[92vh] bg-bg-surface rounded-modal border border-bg-elevated shadow-2xl overflow-hidden flex flex-col"
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Header */}
         {session && (
           <div className="px-6 py-4 border-b border-bg-elevated flex items-start justify-between gap-4">
             <div className="flex-1 min-w-0">
@@ -135,7 +133,6 @@ export function BookingModal() {
           </div>
         )}
 
-        {/* Step indicator */}
         {step < 3 && (
           <div className="px-6 pt-4 flex gap-2">
             <button
@@ -158,7 +155,6 @@ export function BookingModal() {
           </div>
         )}
 
-        {/* Body */}
         <div className="flex-1 overflow-y-auto px-6 py-6">
           {expiredWarning && step === 1 && (
             <div className="mb-4 px-4 py-3 rounded-input border border-error bg-error-tint">
@@ -168,7 +164,6 @@ export function BookingModal() {
             </div>
           )}
 
-          {/* STEP 1 */}
           {step === 1 && (
             <>
               {seatMap && session ? (
@@ -191,7 +186,6 @@ export function BookingModal() {
             </>
           )}
 
-          {/* STEP 2 */}
           {step === 2 && holdId && expiresAt && !order && (
             <div className="grid grid-cols-2 gap-8">
               <CheckoutForm
@@ -231,7 +225,6 @@ export function BookingModal() {
             </div>
           )}
 
-          {/* STEP 3 — Confirmation */}
           {step === 3 && order && (
             <ConfirmationView order={order} onClose={handleFinalClose} />
           )}
