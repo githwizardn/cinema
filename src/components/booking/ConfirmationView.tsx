@@ -1,3 +1,4 @@
+import { useNavigate } from 'react-router-dom'
 import type { Order } from '../../api/types'
 
 interface ConfirmationViewProps {
@@ -6,6 +7,13 @@ interface ConfirmationViewProps {
 }
 
 export function ConfirmationView({ order, onClose }: ConfirmationViewProps) {
+  const navigate = useNavigate()
+
+  const handleMyTickets = () => {
+    onClose()
+    navigate('/profile?tab=upcoming')
+  }
+
   return (
     <div className="text-center py-8">
       <div className="w-16 h-16 rounded-full bg-success/20 flex items-center justify-center mx-auto mb-4">
@@ -68,7 +76,7 @@ export function ConfirmationView({ order, onClose }: ConfirmationViewProps) {
       <div className="flex items-center justify-center gap-3">
         <button
           type="button"
-          onClick={onClose}
+          onClick={handleMyTickets}
           className="px-6 py-3 rounded-input bg-primary hover:bg-primary-hover text-white font-bold text-btn transition-colors"
         >
           My Tickets

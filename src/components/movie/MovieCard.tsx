@@ -1,4 +1,6 @@
 import { useNavigate } from 'react-router-dom'
+import { useAuthStore, useAuthModal, usePendingAction } from '../../features/auth/authStore'
+import { useNotify } from '../../hooks/useNotify'
 import type { Movie } from '../../api/types'
 
 interface MovieCardProps {
@@ -9,9 +11,24 @@ interface MovieCardProps {
 export function MovieCard({ movie, variant = 'now-playing' }: MovieCardProps) {
   const isComingSoon = variant === 'coming-soon'
   const navigate = useNavigate()
+  const { isAuthenticated } = useAuthStore()
+  const { openLogin } = useAuthModal()
+  const { setPendingAction } = usePendingAction()
+  const notifyMutation = useNotify()
 
   const goToMovie = () => {
     navigate(`/movies/${movie.slug}`)
+  }
+
+  const handleNotify = (e: React.MouseEvent) => {
+    e.stopPropagation()
+    if (!isAuthenticated) {
+      // 🎯 Store pending action — replay after login
+      setPendingAction(() => () => notifyMutation.mutate(movie.slug))
+      openLogin()
+      return
+    }
+    notifyMutation.mutate(movie.slug)
   }
 
   return (
@@ -71,18 +88,15 @@ export function MovieCard({ movie, variant = 'now-playing' }: MovieCardProps) {
               </span>
               <button
                 type="button"
-                onClick={(e) => {
-                  e.stopPropagation()
-                  // TODO: POST /movies/{slug}/notify — interrupted action
-                  navigate(`/movies/${movie.slug}`)
-                }}
-                className="px-3 py-1.5 border border-bg-elevated hover:border-txt-secondary rounded-input text-body-sm font-semibold text-txt-primary transition-colors flex items-center gap-1.5"
+                onClick={handleNotify}
+                disabled={notifyMutation.isPending}
+                className="px-3 py-1.5 border border-bg-elevated hover:border-txt-secondary rounded-input text-body-sm font-semibold text-txt-primary transition-colors flex items-center gap-1.5 disabled:opacity-50"
               >
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                   <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" strokeLinecap="round" strokeLinejoin="round" />
                   <path d="M13.73 21a2 2 0 0 1-3.46 0" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
-                Notify Me
+                {notifyMutation.isPending ? 'Subscribing...' : 'Notify Me'}
               </button>
             </>
           ) : (

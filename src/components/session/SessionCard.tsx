@@ -1,5 +1,4 @@
-import { useAuthStore } from '../../features/auth/authStore'
-import { useAuthModal } from '../../features/auth/authStore'
+import { useAuthStore, useAuthModal, usePendingAction } from '../../features/auth/authStore'
 import { useBookingStore } from '../../features/booking/bookingStore'
 import type { Session } from '../../api/types'
 
@@ -10,10 +9,13 @@ interface SessionCardProps {
 export function SessionCard({ session }: SessionCardProps) {
   const { isAuthenticated } = useAuthStore()
   const { openLogin } = useAuthModal()
+  const { setPendingAction } = usePendingAction()
   const { open } = useBookingStore()
 
   const handleClick = () => {
     if (!isAuthenticated) {
+      // 🎯 Store pending action — replay after login
+      setPendingAction(() => () => open(session.id))
       openLogin()
       return
     }
