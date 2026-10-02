@@ -30,7 +30,7 @@ The project demonstrates a modern React stack with **TypeScript**, **TanStack Qu
 
 ## 🚀 Live Demo
 
-🔗 https://cinema-7wv0dx79j-githwizardns-projects.vercel.app/
+🔗 https://cinema-ten-pink.vercel.app/
 
 ###  Account
 
@@ -680,7 +680,7 @@ Critical rules:
 
 ### Vercel (recommended)
 
-https://cinema-7wv0dx79j-githwizardns-projects.vercel.app/
+https://cinema-ten-pink.vercel.app/
 
 ---
 
